@@ -10,7 +10,7 @@ import com.example.propertyplan.vm.PlanViewModel
 
 data class TemplateDef(val name: String, val w: Float, val h: Float, val isUtility: Boolean)
 
-// ...package + imports unchanged...
+
 private val templateDefs = listOf(
     TemplateDef("Small Room", 240f, 160f, false),
     TemplateDef("Medium Room", 360f, 240f, false),

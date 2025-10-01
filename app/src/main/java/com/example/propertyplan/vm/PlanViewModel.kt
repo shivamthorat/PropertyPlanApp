@@ -8,7 +8,7 @@ import com.example.propertyplan.model.*
 import kotlinx.serialization.json.Json
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.round
+
 
 class PlanViewModel : ViewModel() {
 
@@ -207,6 +207,46 @@ class PlanViewModel : ViewModel() {
     /** Toggle the background grid (used by the Grid chip in the top status bar). */
     fun toggleGrid() { showGrid = !showGrid }
 
+    fun addDoorAt(floor: Floor, x: Float, y: Float): PlacedItem {
+        val ppm = floor.params.ppm
+        val item = PlacedItem(
+            type = ItemType.DOOR,
+            x = x, y = y,
+            rotation = 0f,
+            sizeW = 0.9f * ppm,   // ~0.9 m wide
+            sizeH = 0.12f * ppm   // ~12 cm
+        )
+        floor.items.add(item)
+        return item
+    }
+
+    fun addWindowAt(floor: Floor, x: Float, y: Float): PlacedItem {
+        val ppm = floor.params.ppm
+        val item = PlacedItem(
+            type = ItemType.WINDOW,
+            x = x, y = y,
+            rotation = 0f,
+            sizeW = 1.2f * ppm,
+            sizeH = 0.10f * ppm
+        )
+        floor.items.add(item)
+        return item
+    }
+
+    fun addStairsAt(floor: Floor, x: Float, y: Float): PlacedItem {
+        val ppm = floor.params.ppm
+        val item = PlacedItem(
+            type = ItemType.STAIRS,
+            x = x, y = y,
+            rotation = 0f,
+            sizeW = 1.0f * ppm,
+            sizeH = 3.0f * ppm,
+            steps = 12
+        )
+        floor.items.add(item)
+        return item
+    }
+
 }
 
-enum class UIMode { Draw, Move }
+enum class UIMode {  Draw, Move, PlaceDoor, PlaceWindow, PlaceStairs }

@@ -198,7 +198,7 @@ fun SmartPlanScreen(vm: PlanViewModel = viewModel()) {
                 }
             }
 
-            // SIDE RAIL HANDLES
+            // SIDE RAIL HANDLES (movable, fades when idle, drag inward/tap to toggle)
             SideRailHandle(
                 side = Side.Left,
                 isOpen = panels.leftOpen,
@@ -243,9 +243,9 @@ private fun BoxScope.SidePanel(
 
     suspend fun animateTo(target: Float, opening: Boolean) {
         val spec: AnimationSpec<Float> = if (opening) {
-            tween<Float>(durationMillis = openDurationMs, easing = LinearOutSlowInEasing)
+            tween(durationMillis = openDurationMs, easing = LinearOutSlowInEasing)
         } else {
-            tween<Float>(durationMillis = closeDurationMs, easing = FastOutLinearInEasing)
+            tween(durationMillis = closeDurationMs, easing = FastOutLinearInEasing)
         }
         offsetX.animateTo(target, spec)
     }
@@ -341,10 +341,10 @@ private fun BoxScope.SideRailHandle(
     var idleJob by remember { mutableStateOf<Job?>(null) }
     fun kickActive() {
         idleJob?.cancel()
-        scope.launch { alphaAnim.animateTo(1f, tween<Float>(120, easing = FastOutSlowInEasing)) }
+        scope.launch { alphaAnim.animateTo(1f, tween(durationMillis = 120, easing = FastOutSlowInEasing)) }
         idleJob = scope.launch {
             delay(idleDelayMs)
-            alphaAnim.animateTo(idleAlpha, tween<Float>(fadeMs, easing = FastOutSlowInEasing))
+            alphaAnim.animateTo(idleAlpha, tween(durationMillis = fadeMs, easing = FastOutSlowInEasing))
         }
     }
     LaunchedEffect(Unit) { kickActive() }
@@ -418,7 +418,7 @@ private fun BoxScope.SideRailHandle(
                     onDragStopped = {
                         val shouldToggle = dragPx.value >= triggerPx
                         scope.launch {
-                            dragPx.animateTo(0f, tween<Float>(220, easing = FastOutLinearInEasing))
+                            dragPx.animateTo(0f, tween(durationMillis = 220, easing = FastOutLinearInEasing))
                             if (shouldToggle) onToggle()
                             kickActive()
                         }
@@ -445,7 +445,7 @@ private fun BoxScope.SideRailHandle(
     }
 }
 
-/* -------------------- Scrim with animated alpha -------------------- */
+/* -------------------- Scrim with animated alpha (actual color) -------------------- */
 
 @Composable
 private fun BoxScope.Scrim(
@@ -457,7 +457,7 @@ private fun BoxScope.Scrim(
     LaunchedEffect(visible) {
         animAlpha.animateTo(
             targetValue = if (visible) targetAlpha else 0f,
-            animationSpec = tween<Float>(
+            animationSpec = tween(
                 durationMillis = if (visible) 160 else 140,
                 easing = FastOutSlowInEasing
             )
@@ -467,7 +467,7 @@ private fun BoxScope.Scrim(
     Box(
         Modifier
             .matchParentSize()
-            .graphicsLayer { this.alpha = animAlpha.value }
+            .background(MaterialTheme.colorScheme.scrim.copy(alpha = animAlpha.value))
             .align(Alignment.Center)
             .pointerInput(Unit) { detectTapGestures(onTap = { onClick() }) }
     )

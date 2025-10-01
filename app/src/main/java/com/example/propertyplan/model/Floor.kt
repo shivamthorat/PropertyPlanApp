@@ -14,17 +14,15 @@ data class FloorParams(
     var ppm: Int
 )
 
-
-
 @Serializable
 data class Floor(
     var id: String,
     var name: String,
     var params: FloorParams,
-    val rooms: MutableList<Room> = mutableListOf()
+    val rooms: MutableList<Room> = mutableListOf(),
+    // ✅ add items list
+    val items: MutableList<PlacedItem> = mutableListOf()
 )
 
 @Serializable
-data class PlanData(
-    val floors: List<Floor>
-)
+data class PlanData(val floors: List<Floor>)
